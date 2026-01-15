@@ -1,0 +1,35 @@
+{
+  "name": "@ernestopinto/tracer",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "files": ["dist"],
+  "main": "./dist/tracer.umd.js",
+  "module": "./dist/tracer.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/tracer.es.js",
+      "require": "./dist/tracer.umd.js"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "function-plot": "^1.25.3"
+  },
+  "peerDependencies": {
+    "vue": "^3.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/tsconfig": "^0.8.1",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4",
+    "vue": "^3.5.24",
+    "vue-tsc": "^3.1.4"
+  }
+}
