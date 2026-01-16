@@ -1,21 +1,29 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
-import { resolve } from "path";
+import path from "node:path";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [vue(), tailwindcss()],
   build: {
+    outDir: "dist",
+    emptyOutDir: true,
+
+    cssCodeSplit: false, // one css file
+
     lib: {
-      entry: resolve(__dirname, "src/lib/index.ts"),
+      entry: path.resolve(__dirname, "src/lib/index.ts"),
       name: "Tracer",
-      fileName: (format) => `tracer.${format}.js`,
+      formats: ["es"],
+      fileName: () => "index.js",
     },
+
     rollupOptions: {
-      // don't bundle vue into your library
       external: ["vue"],
       output: {
-        globals: {
-          vue: "Vue",
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name?.endsWith(".css")) return "style.css"; // ✅ dist/style.css
+          return "assets/[name]-[hash][extname]";
         },
       },
     },

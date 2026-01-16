@@ -22,65 +22,52 @@
       </div>
     </header>
 
+    <div class="flex flex-col gap-6">
+
     <!-- Expression input -->
-    <label class="block">
-      <div class="text-xs text-gray-600 mb-1">f(x)</div>
-      <input
-          v-model="expr"
-          class="w-full rounded-lg bg-white border border-gray-300 px-3 py-2 text-gray-900
-               outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-          placeholder="x^2 + A - C"
-          autocomplete="off"
-          spellcheck="false"
-      />
-    </label>
-
-    <!-- Variables A / B / C -->
-    <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3">
-      <div
-          v-for="key in (['A','B','C'] as const)"
-          :key="key"
-          class="rounded-xl border border-gray-200 bg-white p-3"
-      >
-        <div class="flex items-center justify-between mb-2">
-          <div class="font-semibold text-gray-900">{{ key }}</div>
-          <div class="text-sm font-mono text-gray-700">{{ vars[key].value.toFixed(1) }}</div>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <label class="flex-1">
-            <div class="text-[11px] text-gray-500 mb-1">min</div>
-            <input
-                type="number"
-                v-model.number="vars[key].min"
-                @change="onVarBoundsChange(key)"
-                class="w-full rounded-lg bg-white border border-gray-300 px-2 py-1 text-gray-900
-                     outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-            />
-          </label>
-
-          <label class="flex-1">
-            <div class="text-[11px] text-gray-500 mb-1">max</div>
-            <input
-                type="number"
-                v-model.number="vars[key].max"
-                @change="onVarBoundsChange(key)"
-                class="w-full rounded-lg bg-white border border-gray-300 px-2 py-1 text-gray-900
-                     outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-            />
-          </label>
-        </div>
-
+      <label class="block">
+        <div class="text-xs text-gray-600 mb-1">f(x)</div>
         <input
-            class="mt-3 w-full"
-            type="range"
-            :min="vars[key].min"
-            :max="vars[key].max"
-            :step="0.1"
-            v-model.number="vars[key].value"
-            @input="onVarValueInput(key)"
+            v-model="expr"
+            class="w-full rounded-lg bg-white border border-gray-300 px-3 py-2 text-gray-900
+                 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            placeholder="x^2 + A - C"
+            autocomplete="off"
+            spellcheck="false"
         />
+      </label>
+
+      <!-- Variables A / B / C -->
+      <div class="grid grid-cols-3 gap-3">
+        <div
+            v-for="key in (['A','B','C'] as const)"
+            :key="key"
+            class="rounded-xl border border-gray-200 bg-white p-3"
+        >
+          <div class="flex items-center justify-between mb-2 px-2">
+            <div class="font-semibold text-gray-900">{{ key }}</div>
+            <div class="text-sm font-mono text-gray-700">
+              {{ vars[key].value.toFixed(1) }}
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <!-- unchanged -->
+          </div>
+
+          <input
+              class="mt-3 w-full"
+              type="range"
+              :min="vars[key].min"
+              :max="vars[key].max"
+              :step="0.1"
+              v-model.number="vars[key].value"
+              @input="onVarValueInput(key)"
+          />
+        </div>
       </div>
+
+
     </div>
 
     <!-- Plot -->
@@ -261,10 +248,10 @@ function onVarValueInput(key: VarKey) {
   renderPlot(); // live update while sliding
 }
 
-function onVarBoundsChange(key: VarKey) {
+/*function onVarBoundsChange(key: VarKey) {
   normalizeVar(key);
   scheduleRender(); // debounced
-}
+}*/
 
 onMounted(() => {
   renderPlot();
@@ -276,6 +263,14 @@ onBeforeUnmount(() => {
   if (debounceTimer) window.clearTimeout(debounceTimer);
   detachWheel();
 });
+
+function setExpr(next: string) {
+  expr.value = next;
+  renderPlot();
+}
+
+defineExpose({ setExpr });
+
 
 // typing changes: debounced
 watch(expr, () => scheduleRender());
