@@ -106,7 +106,7 @@ import Tracer from "@ernestopinto/tracer"</code></pre>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Tracer from "./lib/Tracer.vue";
+  import Tracer from "./lib/Tracer.vue";
 
 // We'll expose a tiny method from Tracer in a second (optional),
 // so these buttons can set the expression.
