@@ -1,6 +1,6 @@
 {
-  "name": "@ernestopinto/tracer",
-  "version": "0.0.0",
+  "name": "@pintomiguelernesto/tracer",
+  "version": "0.0.2",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -23,8 +23,8 @@
     "dist"
   ],
   "peerDependencies": {
-    "vue": "^3.3.0",
-    "function-plot": "^1.25.3"
+    "function-plot": "^1.25.3",
+    "vue": "^3.3.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
@@ -39,5 +39,7 @@
     "vite": "^7.3.1",
     "vue-tsc": "^3.2.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@pintomiguelernesto/tracer": "^0.0.2"
+  }
 }
