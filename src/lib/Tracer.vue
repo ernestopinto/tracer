@@ -68,126 +68,237 @@
         </button>
       </div>
 
-    <!-- Expression input -->
-      <div class="space-y-2 print:hidden">
-        <div class="flex flex-col sm:flex-row gap-2">
-          <div class="flex-1 space-y-1">
-            <div class="text-xs text-gray-600 ml-1">Name</div>
-            <input
-                v-model="activeFunctionName"
-                class="w-full rounded-lg bg-white border border-gray-300 px-3 py-2 text-gray-900
-                     outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm"
-                placeholder="Function name"
-                autocomplete="off"
-                spellcheck="false"
-            />
-          </div>
-          <div class="flex-[2] space-y-1">
-            <div class="text-xs text-gray-600 ml-1">f(x)</div>
-            <div class="flex gap-2">
+      <!-- Expression input -->
+      <div class="border border-gray-200 rounded-xl bg-white overflow-hidden print:hidden">
+        <button
+            @click="isExpressionOpen = !isExpressionOpen"
+            class="w-full flex items-center justify-between px-4 py-3 bg-gray-50/50 hover:bg-gray-50 transition-colors"
+        >
+          <span class="text-sm font-semibold text-gray-700">Expression Input</span>
+          <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="transition-transform duration-200"
+              :class="{ 'rotate-180': isExpressionOpen }"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+
+        <div v-show="isExpressionOpen" class="p-4 space-y-2">
+          <div class="flex flex-col sm:flex-row gap-2">
+            <div class="flex-1 space-y-1">
+              <div class="text-xs text-gray-600 ml-1">Name</div>
               <input
-                  v-model="expr"
-                  class="flex-1 rounded-lg bg-white border border-gray-300 px-3 py-2 text-gray-900
-                       outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                  placeholder="x^2 + A - C"
+                  v-model="activeFunctionName"
+                  class="w-full rounded-lg bg-white border border-gray-300 px-3 py-2 text-gray-900
+                       outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm"
+                  placeholder="Function name"
                   autocomplete="off"
                   spellcheck="false"
               />
-              <button
-                  type="button"
-                  class="shrink-0 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
-                       hover:bg-blue-700 active:scale-[0.98] transition shadow-sm disabled:opacity-50"
-                  @click="saveFunction"
-                  :disabled="!expr.trim()"
-              >
-                Save
-              </button>
+            </div>
+            <div class="flex-[2] space-y-1">
+              <div class="text-xs text-gray-600 ml-1">f(x)</div>
+              <div class="flex gap-2">
+                <input
+                    v-model="expr"
+                    class="flex-1 rounded-lg bg-white border border-gray-300 px-3 py-2 text-gray-900
+                         outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    placeholder="x^2 + A - C"
+                    autocomplete="off"
+                    spellcheck="false"
+                />
+                <button
+                    type="button"
+                    class="shrink-0 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
+                         hover:bg-blue-700 active:scale-[0.98] transition shadow-sm disabled:opacity-50"
+                    @click="saveFunction"
+                    :disabled="!expr.trim()"
+                >
+                  Save
+                </button>
+              </div>
             </div>
           </div>
+          <transition
+              enter-active-class="transition duration-200 ease-out"
+              enter-from-class="transform -translate-y-2 opacity-0"
+              enter-to-class="transform translate-y-0 opacity-100"
+              leave-active-class="transition duration-150 ease-in"
+              leave-from-class="opacity-100"
+              leave-to-class="opacity-0"
+          >
+            <div v-if="successMessage" class="text-xs font-medium text-green-600 ml-1">
+              {{ successMessage }}
+            </div>
+          </transition>
         </div>
-        <transition
-            enter-active-class="transition duration-200 ease-out"
-            enter-from-class="transform -translate-y-2 opacity-0"
-            enter-to-class="transform translate-y-0 opacity-100"
-            leave-active-class="transition duration-150 ease-in"
-            leave-from-class="opacity-100"
-            leave-to-class="opacity-0"
-        >
-          <div v-if="successMessage" class="text-xs font-medium text-green-600 ml-1">
-            {{ successMessage }}
-          </div>
-        </transition>
       </div>
 
       <!-- Variables -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 print:hidden">
-        <div
-            v-for="(state, key) in vars"
-            :key="key"
-            class="rounded-xl border border-gray-200 bg-white p-3"
+      <div class="border border-gray-200 rounded-xl bg-white overflow-hidden print:hidden">
+        <button
+            @click="isVariablesOpen = !isVariablesOpen"
+            class="w-full flex items-center justify-between px-4 py-3 bg-gray-50/50 hover:bg-gray-50 transition-colors"
         >
-          <div class="flex items-center justify-between mb-2 px-2">
-            <div class="font-semibold text-gray-900">{{ key }}</div>
-            <div class="text-sm font-mono text-gray-700">
-              {{ state.value.toFixed(1) }}
+          <span class="text-sm font-semibold text-gray-700">Axis Bounds & Variables</span>
+          <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="transition-transform duration-200"
+              :class="{ 'rotate-180': isVariablesOpen }"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+
+        <div v-show="isVariablesOpen" class="p-4 space-y-4">
+
+          <!-- Axis Bounds -->
+          <div class="rounded-xl border border-gray-200 bg-slate-50 p-4">
+            <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 px-1 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              Axis Bounds
+            </div>
+            <div class="flex flex-wrap gap-x-8 gap-y-4">
+              <div class="space-y-2">
+                <div class="text-[10px] font-semibold text-gray-400 px-1 uppercase">X Axis</div>
+                <div class="flex flex-wrap gap-2">
+                  <label class="block">
+                    <span class="text-[9px] text-gray-500 uppercase px-1">Min</span>
+                    <input
+                        v-model.number="bounds.x[0]"
+                        type="number"
+                        step="any"
+                        class="w-24 rounded border border-gray-300 bg-white px-2 py-1.5 text-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition"
+                        @input="renderPlot"
+                    />
+                  </label>
+                  <label class="block">
+                    <span class="text-[9px] text-gray-500 uppercase px-1">Max</span>
+                    <input
+                        v-model.number="bounds.x[1]"
+                        type="number"
+                        step="any"
+                        class="w-24 rounded border border-gray-300 bg-white px-2 py-1.5 text-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition"
+                        @input="renderPlot"
+                    />
+                  </label>
+                </div>
+              </div>
+              <div class="space-y-2">
+                <div class="text-[10px] font-semibold text-gray-400 px-1 uppercase">Y Axis</div>
+                <div class="flex flex-wrap gap-2">
+                  <label class="block">
+                    <span class="text-[9px] text-gray-500 uppercase px-1">Min</span>
+                    <input
+                        v-model.number="bounds.y[0]"
+                        type="number"
+                        step="any"
+                        class="w-24 rounded border border-gray-300 bg-white px-2 py-1.5 text-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition"
+                        @input="renderPlot"
+                    />
+                  </label>
+                  <label class="block">
+                    <span class="text-[9px] text-gray-500 uppercase px-1">Max</span>
+                    <input
+                        v-model.number="bounds.y[1]"
+                        type="number"
+                        step="any"
+                        class="w-24 rounded border border-gray-300 bg-white px-2 py-1.5 text-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition"
+                        @input="renderPlot"
+                    />
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-2 mb-3 px-1">
-            <label class="block">
-              <span class="text-[10px] text-gray-500 uppercase px-1">Min</span>
-              <input 
-                v-model.number="state.min" 
-                type="number" 
-                class="w-full rounded border border-gray-200 px-2 py-1 text-xs focus:border-blue-500 outline-none" 
-                @input="onVarBoundsChange(key as string)"
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <div
+                v-for="(state, key) in vars"
+                :key="key"
+                class="rounded-xl border border-gray-200 bg-white p-3"
+            >
+              <div class="flex items-center justify-between mb-2 px-2">
+                <div class="font-semibold text-gray-900">{{ key }}</div>
+                <div class="text-sm font-mono text-gray-700">
+                  {{ state.value.toFixed(1) }}
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 mb-3 px-1">
+                <label class="block">
+                  <span class="text-[10px] text-gray-500 uppercase px-1">Min</span>
+                  <input
+                    v-model.number="state.min"
+                    type="number"
+                    class="w-full rounded border border-gray-200 px-2 py-1 text-xs focus:border-blue-500 outline-none"
+                    @input="onVarBoundsChange(key as string)"
+                  />
+                </label>
+                <label class="block">
+                  <span class="text-[10px] text-gray-500 uppercase px-1">Max</span>
+                  <input
+                    v-model.number="state.max"
+                    type="number"
+                    class="w-full rounded border border-gray-200 px-2 py-1 text-xs focus:border-blue-500 outline-none"
+                    @input="onVarBoundsChange(key as string)"
+                  />
+                </label>
+              </div>
+
+              <input
+                  class="w-full"
+                  type="range"
+                  :min="state.min"
+                  :max="state.max"
+                  :step="0.1"
+                  v-model.number="state.value"
+                  @input="onVarValueInput(key)"
               />
-            </label>
-            <label class="block">
-              <span class="text-[10px] text-gray-500 uppercase px-1">Max</span>
-              <input 
-                v-model.number="state.max" 
-                type="number" 
-                class="w-full rounded border border-gray-200 px-2 py-1 text-xs focus:border-blue-500 outline-none" 
-                @input="onVarBoundsChange(key as string)"
-              />
-            </label>
+            </div>
+
+            <!-- Add new variable -->
+            <div v-if="nextVarKey" class="rounded-xl border border-dashed border-gray-300 bg-gray-50/50 p-3">
+              <div class="flex items-center justify-between mb-2 px-2">
+                <div class="font-semibold text-gray-500">New ({{ nextVarKey }})</div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 mb-2">
+                <label class="block">
+                  <span class="text-[10px] text-gray-500 uppercase px-1">Min</span>
+                  <input v-model.number="newVarMin" type="number" class="w-full rounded border border-gray-200 px-2 py-1 text-xs" />
+                </label>
+                <label class="block">
+                  <span class="text-[10px] text-gray-500 uppercase px-1">Max</span>
+                  <input v-model.number="newVarMax" type="number" class="w-full rounded border border-gray-200 px-2 py-1 text-xs" />
+                </label>
+              </div>
+
+              <button
+                  @click="addVariable"
+                  class="w-full rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800 transition"
+              >
+                Add Variable {{ nextVarKey }}
+              </button>
+            </div>
           </div>
-
-          <input
-              class="w-full"
-              type="range"
-              :min="state.min"
-              :max="state.max"
-              :step="0.1"
-              v-model.number="state.value"
-              @input="onVarValueInput(key)"
-          />
-        </div>
-
-        <!-- Add new variable -->
-        <div v-if="nextVarKey" class="rounded-xl border border-dashed border-gray-300 bg-gray-50/50 p-3">
-          <div class="flex items-center justify-between mb-2 px-2">
-            <div class="font-semibold text-gray-500">New ({{ nextVarKey }})</div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2 mb-2">
-            <label class="block">
-              <span class="text-[10px] text-gray-500 uppercase px-1">Min</span>
-              <input v-model.number="newVarMin" type="number" class="w-full rounded border border-gray-200 px-2 py-1 text-xs" />
-            </label>
-            <label class="block">
-              <span class="text-[10px] text-gray-500 uppercase px-1">Max</span>
-              <input v-model.number="newVarMax" type="number" class="w-full rounded border border-gray-200 px-2 py-1 text-xs" />
-            </label>
-          </div>
-
-          <button
-              @click="addVariable"
-              class="w-full rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800 transition"
-          >
-            Add Variable {{ nextVarKey }}
-          </button>
         </div>
       </div>
 
@@ -196,29 +307,25 @@
 
     <!-- Plot -->
     <div class="space-y-1 print:hidden">
-      <div class="pt-10 text-[10px] text-gray-500 ml-1 uppercase font-semibold tracking-wider">Function</div>
+      <div class="pt-3 text-[10px] text-gray-500 ml-1 uppercase font-semibold tracking-wider">Function</div>
       <input
           :value="'f(x) = ' + substitutedExpression"
           readonly
-          class="w-full rounded-lg bg-gray-50 border border-gray-200 px-3 py-1.5 text-lg font-mono font-bold text-gray-900
+          class="w-full rounded-lg bg-gray-50 border border-gray-200 px-3 py-1.5 text-md font-mono font-bold text-gray-900
                  outline-none focus:border-blue-300 focus:ring-1 focus:ring-blue-100 cursor-text"
           title="Current substituted expression (copy-pasteable)"
           @click="($event.target as HTMLInputElement).select()"
       />
     </div>
 
-    <div class="mt-4 rounded-xl border border-gray-200 bg-white p-2 print:border-none print:p-0 print:mt-0">
-      <div ref="plotEl" class="w-full select-none h-105 print:h-200"></div>
+    <div class="mt-4 rounded-xl border border-gray-200 bg-white p-2 print:border-none print:p-0 print:mt-0 flex justify-center">
+      <div ref="plotEl" class="w-full select-none h-[462px] print:h-[880px] flex justify-center items-center"></div>
     </div>
 
     <p v-if="error" class="mt-3 text-sm text-red-600">
       {{ error }}
     </p>
 
-    <div v-if="props.demoMode && props.evals && props.evals.length > 0" class="mt-6 print:hidden">
-      <div class="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wider">Loaded Functions</div>
-      <pre class="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-auto text-xs leading-relaxed text-gray-700"><code>{{ JSON.stringify(props.evals, null, 2) }}</code></pre>
-    </div>
   </section>
 </template>
 
@@ -253,16 +360,21 @@ const DEFAULT_BOUNDS: Bounds = { x: [-2, 5], y: [-5, 5] };
 const STORAGE_KEY_EXPR = "tracer_expr";
 const STORAGE_KEY_VARS = "tracer_vars";
 const STORAGE_KEY_ACTIVE = "tracer_active_func";
+const STORAGE_KEY_BOUNDS = "tracer_bounds";
 
 // default
 const savedExpr = localStorage.getItem(STORAGE_KEY_EXPR);
 const savedActive = localStorage.getItem(STORAGE_KEY_ACTIVE);
+const savedBounds = localStorage.getItem(STORAGE_KEY_BOUNDS);
 
 const expr = ref(savedExpr || "A*sin(B*x - C)");
 const activeFunctionName = ref(savedActive);
 const lastActiveFunctionName = ref(savedActive);
 
 const substitutedExpression = computed(() => substituteVars(expr.value));
+
+const isExpressionOpen = ref(true);
+const isVariablesOpen = ref(true);
 
 const successMessage = ref<string | null>(null);
 const error = ref<string | null>(null);
@@ -320,11 +432,18 @@ function addVariable() {
   renderPlot();
 }
 
+// Initialize bounds from storage or default
+const initialBounds: Bounds = savedBounds 
+  ? JSON.parse(savedBounds) 
+  : { x: [...DEFAULT_BOUNDS.x], y: [...DEFAULT_BOUNDS.y] };
+
 // ✅ we own bounds so zoom persists across redraws
-const bounds = ref<Bounds>({
-  x: [...DEFAULT_BOUNDS.x],
-  y: [...DEFAULT_BOUNDS.y],
-});
+const bounds = ref<Bounds>(initialBounds);
+
+// Watch bounds and persist to localStorage
+watch(bounds, (newBounds) => {
+  localStorage.setItem(STORAGE_KEY_BOUNDS, JSON.stringify(newBounds));
+}, { deep: true });
 
 let debounceTimer: number | null = null;
 
@@ -378,12 +497,77 @@ function zoomBounds(factor: number) {
   const minSpan = 1e-6;
 
   bounds.value = {
-    x: [cx - Math.max(nx, minSpan) / 2, cx + Math.max(nx, minSpan) / 2],
-    y: [cy - Math.max(ny, minSpan) / 2, cy + Math.max(ny, minSpan) / 2],
+    x: [
+      Number((cx - Math.max(nx, minSpan) / 2).toFixed(2)),
+      Number((cx + Math.max(nx, minSpan) / 2).toFixed(2))
+    ],
+    y: [
+      Number((cy - Math.max(ny, minSpan) / 2).toFixed(2)),
+      Number((cy + Math.max(ny, minSpan) / 2).toFixed(2))
+    ],
   };
 }
 
 // IMPORTANT: use a stable handler ref for add/remove
+let isDragging = false;
+let lastMousePos = { x: 0, y: 0 };
+
+function onMouseDown(e: MouseEvent) {
+  // Prevent function-plot from seeing this as a click/drag start
+  e.preventDefault();
+  e.stopPropagation();
+  e.stopImmediatePropagation?.();
+
+  isDragging = true;
+  lastMousePos = { x: e.clientX, y: e.clientY };
+  // Set cursor to grabbing
+  if (wheelTarget) wheelTarget.style.cursor = 'grabbing';
+}
+
+function onMouseMove(e: MouseEvent) {
+  if (!isDragging || !plotEl.value) return;
+
+  // Prevent default behavior (like text selection or other drags)
+  e.preventDefault();
+  e.stopPropagation();
+  e.stopImmediatePropagation?.();
+
+  const dx = e.clientX - lastMousePos.x;
+  const dy = e.clientY - lastMousePos.y;
+  lastMousePos = { x: e.clientX, y: e.clientY };
+
+  const width = plotEl.value.clientWidth || 800;
+  const height = plotEl.value.clientHeight || 462;
+
+  const [x0, x1] = bounds.value.x;
+  const [y0, y1] = bounds.value.y;
+
+  const rangeX = x1 - x0;
+  const rangeY = y1 - y0;
+
+  // Convert pixel delta to coordinate delta
+  // Note: dy is inverted because screen Y goes down, plot Y goes up
+  const deltaX = (dx / width) * rangeX;
+  const deltaY = (dy / height) * rangeY;
+
+  bounds.value = {
+    x: [Number((x0 - deltaX).toFixed(2)), Number((x1 - deltaX).toFixed(2))],
+    y: [Number((y0 + deltaY).toFixed(2)), Number((y1 + deltaY).toFixed(2))],
+  };
+
+  renderPlot();
+}
+
+function onMouseUp(e: MouseEvent) {
+  if (isDragging) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation?.();
+  }
+  isDragging = false;
+  if (wheelTarget) wheelTarget.style.cursor = 'crosshair';
+}
+
 function onWheel(e: WheelEvent) {
   // Stop function-plot/d3 from swallowing the wheel
   e.preventDefault();
@@ -402,6 +586,9 @@ function onWheel(e: WheelEvent) {
 function detachWheel() {
   if (wheelTarget) {
     wheelTarget.removeEventListener("wheel", onWheel as any, true);
+    wheelTarget.removeEventListener("mousedown", onMouseDown as any, true);
+    window.removeEventListener("mousemove", onMouseMove as any, true);
+    window.removeEventListener("mouseup", onMouseUp as any, true);
     wheelTarget = null;
   }
 }
@@ -420,9 +607,15 @@ async function attachWheelToPlotOverlay() {
   detachWheel();
 
   wheelTarget = rect;
+  wheelTarget.style.cursor = 'crosshair';
 
   // Capture phase so we intercept before any internal handlers
   rect.addEventListener("wheel", onWheel as any, { capture: true, passive: false } as any);
+  
+  // Drag handling
+  rect.addEventListener("mousedown", onMouseDown as any, { capture: true });
+  window.addEventListener("mousemove", onMouseMove as any, { capture: true });
+  window.addEventListener("mouseup", onMouseUp as any, { capture: true });
 }
 
 function renderPlot() {
@@ -438,7 +631,7 @@ function renderPlot() {
 
   // Determine height based on whether we are likely in a print context or just measuring
   // However, clientHeight will give us the CSS height.
-  const targetHeight = plotEl.value.clientHeight || 420;
+  const targetHeight = plotEl.value.clientHeight || 462;
 
   try {
     functionPlot({
@@ -469,7 +662,10 @@ function scheduleRender() {
 }
 
 function resetView() {
-  bounds.value = { x: [...DEFAULT_BOUNDS.x], y: [...DEFAULT_BOUNDS.y] };
+  bounds.value = {
+    x: [Number(DEFAULT_BOUNDS.x[0].toFixed(2)), Number(DEFAULT_BOUNDS.x[1].toFixed(2))],
+    y: [Number(DEFAULT_BOUNDS.y[0].toFixed(2)), Number(DEFAULT_BOUNDS.y[1].toFixed(2))]
+  };
   renderPlot();
 }
 
@@ -519,7 +715,7 @@ async function exportAsPng() {
 
   // 1. Prepare SVG for canvas (needs dimensions and proper serialization)
   const width = svg.clientWidth || svg.viewBox.baseVal.width || 800;
-  const height = svg.clientHeight || svg.viewBox.baseVal.height || 420;
+  const height = svg.clientHeight || svg.viewBox.baseVal.height || 462;
 
   // Clone SVG to avoid modifying the displayed one if we need to add styles
   const clonedSvg = svg.cloneNode(true) as SVGSVGElement;
