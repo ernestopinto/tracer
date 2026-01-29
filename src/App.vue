@@ -29,7 +29,7 @@
     </header>
 
     <!-- Content -->
-    <main class="px-6 py-8 print:p-0">
+    <main class="px-6 py-8 print:p-0 print:m-0">
       <div 
         class="grid grid-cols-1 transition-all duration-300 ease-in-out print:block"
         :class="isSidebarOpen ? 'xl:grid-cols-[420px_1fr] gap-6' : 'xl:grid-cols-[0px_1fr] gap-0'"
