@@ -1,6 +1,7 @@
 # Tracer Component
+![Tracer Component](./src/assets/plot-function-1.png)
 
-A powerful and flexible function tracer for Vue 3, allowing users to plot mathematical expressions, manipulate variables in real-time, and perform calculus operations.
+A Flexible function tracer for Vue 3, allowing users to plot mathematical expressions, manipulate variables in real-time, and perform calculus operations.
 
 ## Main Features
 
