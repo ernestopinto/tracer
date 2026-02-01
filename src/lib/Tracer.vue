@@ -1,50 +1,28 @@
 <template>
   <section class="w-full p-0">
-    <header class="mb-4 print:hidden">
-      <div class="flex items-start justify-between gap-3">
-        <div>
-          <h2 class="text-xl font-semibold text-gray-900">Tracer</h2>
-          <p class="text-sm text-gray-600">
-            Type a function of <span class="font-mono text-gray-800">x</span> (example:
-            <span class="font-mono text-gray-800">x^2 + A - C</span>)
-          </p>
-        </div>
-
-        <div class="flex gap-2">
-          <button
-              type="button"
-              class="shrink-0 rounded-lg px-3 py-2 border border-gray-300 bg-white
-                 text-sm text-gray-800 hover:bg-gray-50 transition print:hidden"
-              @click="resetView"
-              title="Reset view"
-          >
-            Reset view
-          </button>
-          <button
-              type="button"
-              class="shrink-0 rounded-lg px-3 py-2 border border-gray-300 bg-white
-                 text-sm text-gray-800 hover:bg-gray-50 transition print:hidden flex items-center gap-1.5"
-              @click="printPlot"
-              title="Print plot"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-            Print
-          </button>
-          <button
-              type="button"
-              class="shrink-0 rounded-lg px-3 py-2 border border-gray-300 bg-white
-                 text-sm text-gray-800 hover:bg-gray-50 transition print:hidden flex items-center gap-1.5"
-              @click="exportAsPng"
-              title="Export as PNG"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Export
-          </button>
-        </div>
+    <div class="flex flex-col gap-6 relative pt-12 sm:pt-0">
+      <div class="absolute top-0 right-0 flex gap-2 print:hidden z-10">
+        <button
+            type="button"
+            class="shrink-0 rounded-lg px-3 py-2 border border-gray-300 bg-white
+               text-sm text-gray-800 hover:bg-gray-50 transition print:hidden"
+            @click="resetView"
+            title="Reset view"
+        >
+          Reset view
+        </button>
+        <button
+            type="button"
+            class="shrink-0 rounded-lg px-3 py-2 border border-gray-300 bg-white
+               text-sm text-gray-800 hover:bg-gray-50 transition print:hidden flex items-center gap-1.5"
+            @click="exportAsPng"
+            title="Export as PNG"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Export
+        </button>
       </div>
-    </header>
 
-    <div class="flex flex-col gap-6 print:gap-2">
       <div class="hidden print:block mb-2">
         <h1 class="text-2xl font-bold text-gray-900">{{ activeFunctionName || 'Plot' }}</h1>
         <div class="text-lg font-mono text-blue-600 mt-1">
@@ -71,9 +49,9 @@
       </div>
 
       <!-- Functions -->
-      <div v-if="props.evals && props.evals.length > 0" class="flex flex-wrap gap-2 print:hidden">
+      <div v-if="props.defs?.f && props.defs.f.length > 0" class="flex flex-wrap gap-2 print:hidden">
         <button
-            v-for="item in props.evals"
+            v-for="item in props.defs.f"
             :key="item.name"
             type="button"
             class="rounded-md px-3 py-1.5 text-xs font-medium border transition-colors"
@@ -87,7 +65,7 @@
       </div>
 
       <!-- Expression input -->
-      <div class="border border-gray-200 rounded-xl bg-white overflow-hidden print:hidden">
+      <div v-if="props.defs?.d?.expr !== false" class="border border-gray-200 rounded-xl bg-white overflow-hidden print:hidden">
         <button
             @click="isExpressionOpen = !isExpressionOpen"
             class="w-full flex items-center justify-between px-4 py-3 bg-gray-50/50 hover:bg-gray-50 transition-colors"
@@ -162,7 +140,7 @@
       </div>
 
       <!-- Variables -->
-      <div class="border border-gray-200 rounded-xl bg-white overflow-hidden print:hidden">
+      <div v-if="props.defs?.d?.vars !== false" class="border border-gray-200 rounded-xl bg-white overflow-hidden print:hidden">
         <button
             @click="isVariablesOpen = !isVariablesOpen"
             class="w-full flex items-center justify-between px-4 py-3 bg-gray-50/50 hover:bg-gray-50 transition-colors"
@@ -188,7 +166,7 @@
         <div v-show="isVariablesOpen" class="p-4 space-y-4">
 
           <!-- Axis Bounds -->
-          <div class="rounded-xl border border-gray-200 bg-slate-50 p-4">
+          <div v-if="props.defs?.d?.axxis !== false && props.defs?.d?.axxis !== 'false'" class="rounded-xl border border-gray-200 bg-slate-50 p-4">
             <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 px-1 flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
               Axis Bounds
@@ -340,8 +318,8 @@
       />
     </div>
 
-    <div class="mt-4 rounded-xl border border-gray-200 bg-white p-2 print:border-none print:p-0 print:mt-0 print:translate-y-[-10%] flex justify-center">
-      <div ref="plotEl" class="w-full select-none h-[462px] print:h-[880px] flex justify-center items-center"></div>
+    <div class="mt-4 rounded-xl border border-gray-200 bg-white p-2 flex justify-center">
+      <div ref="plotEl" class="w-full select-none h-[462px] min-h-[200px] resize overflow-hidden flex justify-center items-center custom-resizer"></div>
     </div>
 
     <p v-if="error" class="mt-3 text-sm text-red-600">
@@ -349,7 +327,7 @@
     </p>
 
     <!-- Calculus -->
-    <div class="mt-6 border border-gray-200 rounded-xl bg-white overflow-hidden print:hidden">
+    <div v-if="props.defs?.d?.calc !== false" class="mt-6 border border-gray-200 rounded-xl bg-white overflow-hidden print:hidden">
       <button
           @click="isCalculusOpen = !isCalculusOpen"
           class="w-full flex items-center justify-between px-4 py-3 bg-gray-50/50 hover:bg-gray-50 transition-colors"
@@ -551,23 +529,29 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref, watch, nextTick, computed } from "vue";
 import functionPlot from "function-plot";
-import type { EvalData } from "./types";
+import type { TracerDefs } from "./types";
 
 const props = withDefaults(defineProps<{
-  evals?: EvalData[];
-  demoMode?: boolean;
+  defs?: TracerDefs;
 }>(), {
-  evals: () => [
-    {
-      "name": "Function 1",
-      "f": "A*Sin(B*x)"
+  defs: () => ({
+    f: [
+      {
+        "name": "Function 1",
+        "f": "A*sin(B*x - C)"
+      }
+    ],
+    d: {
+      "axxis": true,
+      "vars": true,
+      "calc": true,
+      "expr": true
     }
-  ],
-  demoMode: false
+  })
 });
 
 const emit = defineEmits<{
-  (e: 'update:evals', value: EvalData[]): void;
+  (e: 'update:defs', value: TracerDefs): void;
 }>();
 
 type Bounds = { x: [number, number]; y: [number, number] };
@@ -600,7 +584,6 @@ const isCalculatingZeros = ref(false);
 const extrema = ref<{ x: number, y: number, type: 'max' | 'min' }[]>([]);
 const isCalculatingExtrema = ref(false);
 const highlightedPoint = ref<{ x: number, y: number, color: string, id?: string } | null>(null);
-const isPrinting = ref(false);
 const integralX1 = ref<number | null>(null);
 const integralX2 = ref<number | null>(null);
 const integralResult = ref<number | null>(null);
@@ -621,8 +604,8 @@ const plotEl = ref<HTMLDivElement | null>(null);
 
 // If nothing in storage, default to first eval if available
 onMounted(() => {
-  if (!savedExpr && !savedActive && props.evals && props.evals.length > 0) {
-    const first = props.evals[0];
+  if (!savedExpr && !savedActive && props.defs?.f && props.defs.f.length > 0) {
+    const first = props.defs.f[0];
     if (first) {
       expr.value = first.f;
       activeFunctionName.value = first.name;
@@ -639,9 +622,24 @@ onMounted(() => {
   }
   window.addEventListener("resize", scheduleRender);
 
+  if (plotEl.value) {
+    resizeObserver = new ResizeObserver(() => {
+      scheduleRender();
+    });
+    resizeObserver.observe(plotEl.value);
+  }
+
   if (integralX1.value === null || integralX2.value === null) {
     integralX1.value = bounds.value.x[0];
     integralX2.value = bounds.value.x[1];
+  }
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", scheduleRender);
+  if (resizeObserver) {
+    resizeObserver.disconnect();
+    resizeObserver = null;
   }
 });
 
@@ -695,32 +693,33 @@ watch(bounds, (newBounds) => {
 }, { deep: true });
 
 let debounceTimer: number | null = null;
+let resizeObserver: ResizeObserver | null = null;
 
 watch(() => expr.value, () => {
-  if (isPrinting.value) return;
   zeros.value = [];
   extrema.value = [];
   highlightedPoint.value = null;
   integralResult.value = null;
   integralLines.value = null;
+  scheduleRender();
 });
 
 watch(() => vars.value, () => {
-  if (isPrinting.value) return;
   zeros.value = [];
   extrema.value = [];
   highlightedPoint.value = null;
   integralResult.value = null;
   integralLines.value = null;
+  scheduleRender();
 }, { deep: true });
 
 watch(() => bounds.value, () => {
-  if (isPrinting.value) return;
   zeros.value = [];
   extrema.value = [];
   highlightedPoint.value = null;
   integralResult.value = null;
   integralLines.value = null;
+  scheduleRender();
 }, { deep: true });
 
 // wheel directly to function-plot's overlay rect.
@@ -934,8 +933,7 @@ function renderPlot() {
 
   const fn = substituteVars(expr.value);
   
-  // Determine height based on whether we are likely in a print context or just measuring
-  // However, clientHeight will give us the CSS height.
+  // Determine height based on container
   const targetHeight = plotEl.value.clientHeight || 462;
   
   const data: any[] = [
@@ -1312,60 +1310,6 @@ async function findIntegral() {
   }
 }
 
-async function printPlot() {
-  isPrinting.value = true;
-  
-  // Wait for isPrinting to propagate to watchers
-  await nextTick();
-
-  // Briefly zoom out and shift Y-axis for print
-  const originalBounds = {
-    x: [...bounds.value.x] as [number, number],
-    y: [...bounds.value.y] as [number, number]
-  };
-  
-  // 1. Zoom out factor 1.2
-  const [x0, x1] = bounds.value.x;
-  const [y0, y1] = bounds.value.y;
-  const cx = (x0 + x1) / 2;
-  const cy = (y0 + y1) / 2;
-  const nx = (x1 - x0) * 1.2;
-  const ny = (y1 - y0) * 1.2;
-
-  // 2. Shift domain to the right to push Y-axis (x=0) to the left
-  // We'll shift it by about 20% of the new width
-  const shift = nx * 0.2;
-
-  bounds.value = {
-    x: [(cx - nx / 2) + shift, (cx + nx / 2) + shift],
-    y: [cy - ny / 2, cy + ny / 2],
-  };
-
-  // Force rendering for print
-  renderPlot();
-  
-  // Also ensure the UI reflects any changes needed for print
-  await nextTick();
-
-  // Wait for the taller height and zoom to be applied in DOM
-  await nextTick();
-  // Small delay to ensure function-plot finishes its async internal render if any
-  await new Promise(resolve => setTimeout(resolve, 100));
-
-  window.print();
-
-  // Wait for print dialog to close
-  await nextTick();
-
-  // Restore
-  bounds.value = originalBounds;
-  renderPlot();
-  
-  // Wait for bounds restoration to be processed by watchers
-  await nextTick();
-  isPrinting.value = false;
-}
-
 async function exportAsPng() {
   if (!plotEl.value) return;
 
@@ -1509,7 +1453,7 @@ function setExpr(next: string, name?: string | null) {
     lastActiveFunctionName.value = name;
   } else {
     // If it's just a string from outside, try to find if it matches an existing one
-    const found = props.evals?.find(e => e.f === next);
+    const found = props.defs?.f?.find(e => e.f === next);
     const foundName = found ? found.name : null;
     activeFunctionName.value = foundName;
     lastActiveFunctionName.value = foundName;
@@ -1526,7 +1470,7 @@ function showSuccess(msg: string) {
 
 function saveFunction() {
   if (!expr.value.trim()) return;
-  const newEvals = [...(props.evals || [])];
+  const newEvals = [...(props.defs?.f || [])];
   
   if (newEvals.length === 0) return;
 
@@ -1583,7 +1527,9 @@ function saveFunction() {
       }
     }
   }
-  emit('update:evals', newEvals);
+  if (props.defs) {
+    emit('update:defs', { ...props.defs, f: newEvals });
+  }
 }
 
 defineExpose({ setExpr });
@@ -1607,3 +1553,44 @@ watch(vars, (newVal) => {
   scheduleRender();
 }, { deep: true });
 </script>
+
+<style scoped>
+.custom-resizer {
+  position: relative;
+}
+
+.custom-resizer::-webkit-resizer {
+  background-color: transparent;
+}
+
+.custom-resizer::after {
+  content: "";
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  width: 14px;
+  height: 14px;
+  background-image: linear-gradient(135deg, 
+    transparent 0%, transparent 50%, 
+    #94a3b8 50%, #94a3b8 60%, 
+    transparent 60%, transparent 70%, 
+    #94a3b8 70%, #94a3b8 80%, 
+    transparent 80%, transparent 90%, 
+    #94a3b8 90%, #94a3b8 100%
+  );
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.custom-resizer:hover::after {
+  opacity: 1;
+  background-image: linear-gradient(135deg, 
+    transparent 0%, transparent 50%, 
+    #475569 50%, #475569 60%, 
+    transparent 60%, transparent 70%, 
+    #475569 70%, #475569 80%, 
+    transparent 80%, transparent 90%, 
+    #475569 90%, #475569 100%
+  );
+}
+</style>

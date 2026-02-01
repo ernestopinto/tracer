@@ -61,7 +61,7 @@
 
               <div class="grid gap-2">
                 <button
-                    v-for="item in functions"
+                    v-for="item in defs.f"
                     :key="item.name"
                     class="w-full text-left rounded-lg border border-slate-200 bg-white px-3 py-2
                          hover:bg-slate-50 active:scale-[0.99] transition"
@@ -74,9 +74,9 @@
             </div>
 
             <!-- Loaded Functions (JSON) -->
-            <div v-if="functions && functions.length > 0" class="mt-4 print:hidden">
+            <div v-if="defs.f && defs.f.length > 0" class="mt-4 print:hidden">
               <div class="text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Loaded Functions</div>
-              <pre class="bg-slate-50 border border-slate-200 rounded-lg p-4 overflow-auto text-[10px] leading-tight text-slate-700 max-h-64"><code>{{ JSON.stringify(functions, null, 2) }}</code></pre>
+              <pre class="bg-slate-50 border border-slate-200 rounded-lg p-4 overflow-auto text-[10px] leading-tight text-slate-700 max-h-64"><code>{{ JSON.stringify(defs.f, null, 2) }}</code></pre>
             </div>
 
             <div class="rounded-xl border border-slate-200 bg-white p-4">
@@ -111,7 +111,14 @@ import Tracer from "@ernestopinto/tracer"</code></pre>
           </div>
 
           <div class="p-4 print:p-0">
-            <Tracer ref="tracerRef" v-model:evals="functions" :demo-mode="true" />
+            <div class="mb-4">
+              <h2 class="text-xl font-semibold text-gray-900">Tracer</h2>
+              <p class="text-sm text-gray-600">
+                Type a function of <span class="font-mono text-gray-800">x</span> (example:
+                <span class="font-mono text-gray-800">x^2 + A - C</span>)
+              </p>
+            </div>
+            <Tracer ref="tracerRef" />
           </div>
         </section>
       </div>
@@ -122,37 +129,45 @@ import Tracer from "@ernestopinto/tracer"</code></pre>
 <script setup lang="ts">
 import { ref, watch } from "vue";
   import Tracer from "./lib/Tracer.vue";
-  import type { EvalData } from "./lib/types";
+  import type { TracerDefs } from "./lib/types";
 
-const STORAGE_KEY = "tracer_evals";
+const STORAGE_KEY = "tracer_defs";
 
-const defaultFunctions: EvalData[] = [
-  {
-    "name":"Function 1",
-    "f":"A*sin(B*x - C)"
-  },
-  {
-    "name":"Function 2",
-    "f":"x^2 + A*x + C"
-  },
-  {
-    "name":"Function 3",
-    "f":"A*cos(x) + B*sin(2*x) - C"
-  },
-  {
-    "name":"Function 4",
-    "f":"A/x"
+const defaultDefs: TracerDefs = {
+  "f":[
+    {
+      "name":"Seno",
+      "f":"A*sin(B*x - 1)"
+    },
+    {
+      "name":"Função quadrática",
+      "f":"x^2 + A*x - 1"
+    },
+    {
+      "name":"Coseno menos Seno",
+      "f":"A*cos(x) + B*sin(2*x) - 1"
+    },
+    {
+      "name":"Destribuição Normal Comprimento Pénis",
+      "f":"0.249 * exp(-((x - 13.1)^2) / 5.12)"
+    }
+  ],
+  "d":{
+    "axxis":true,
+    "vars":true,
+    "calc":true,
+    "expr":true
   }
-];
+};
 
-const savedFunctions = localStorage.getItem(STORAGE_KEY);
-const functions = ref<EvalData[]>(
-    savedFunctions ? JSON.parse(savedFunctions) : defaultFunctions
+const savedDefs = localStorage.getItem(STORAGE_KEY);
+const defs = ref<TracerDefs>(
+    savedDefs ? JSON.parse(savedDefs) : defaultDefs
 );
 
 const isSidebarOpen = ref(true);
 
-watch(functions, (newVal) => {
+watch(defs, (newVal) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(newVal));
 }, { deep: true });
 
