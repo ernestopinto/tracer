@@ -118,7 +118,7 @@ import Tracer from "@ernestopinto/tracer"</code></pre>
                 <span class="font-mono text-gray-800">x^2 + A - C</span>)
               </p>
             </div>
-            <Tracer ref="tracerRef" />
+            <Tracer v-model:defs="functions" ref="tracerRef" />
           </div>
         </section>
       </div>
@@ -133,19 +133,24 @@ import { ref, watch } from "vue";
 
 const STORAGE_KEY = "tracer_defs";
 
+const functions = ref<TracerDefs>({
+  f: [
+    { name: "Sine Wave", f: "A*sin(B*x)" },
+    { name: "Inverted", f: "B/x" }
+  ],
+  d: {
+    axxis: true,
+    vars: true,
+    calc: true,
+    expr: true
+  }
+});
+
 const defaultDefs: TracerDefs = {
   "f":[
     {
       "name":"Seno",
       "f":"A*sin(B*x - 1)"
-    },
-    {
-      "name":"Função quadrática",
-      "f":"x^2 + A*x - 1"
-    },
-    {
-      "name":"Coseno menos Seno",
-      "f":"A*cos(x) + B*sin(2*x) - 1"
     },
     {
       "name":"Destribuição Normal Comprimento Pénis",

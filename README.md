@@ -28,9 +28,10 @@ A Flexible function tracer for Vue 3, allowing users to plot mathematical expres
 
 ```vue
 <script setup>
+import { ref } from 'vue'
 import Tracer from '@ernestopinto/tracer'
 
-const functions = {
+const functions = ref({
   f: [
     { name: "Sine Wave", f: "A*sin(B*x)" }
   ],
@@ -40,7 +41,7 @@ const functions = {
     calc: true,
     expr: true
   }
-}
+})
 </script>
 
 <template>
