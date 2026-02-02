@@ -73,8 +73,7 @@ const functions = ref({
 </template>
 
 <style scoped>
-  /* WorkAround for the VARS display (until new version fix) -> Force
-     the Tracer variables grid to show more columns if needed, 
+  /* WorkAround for the VARS display -> Force the Tracer variables grid to show more columns if needed,
      or ensure it doesn't wrap too early within the project card */
   :deep(.grid.grid-cols-1.sm\:grid-cols-2.md\:grid-cols-3) {
     display: flex !important;
@@ -99,6 +98,19 @@ const functions = ref({
     width: 100% !important;
     color: black!important;
     background-color: #eceaea!important;
+  }
+
+  /* Fix for the Remove Variable button position */
+  :deep(.grid.grid-cols-1.sm\:grid-cols-2.md\:grid-cols-3 > .relative.group) {
+    position: relative !important;
+  }
+
+  :deep(.grid.grid-cols-1.sm\:grid-cols-2.md\:grid-cols-3 button.absolute) {
+    position: absolute !important;
+    top: 0.5rem !important;
+    right: 0.5rem !important;
+    margin: 0 !important;
+    z-index: 10 !important;
   }
 </style>
 ```
