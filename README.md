@@ -71,4 +71,34 @@ const functions = ref({
 <template>
   <Tracer v-model:defs="functions" />
 </template>
+
+<style scoped>
+  /* WorkAround for the VARS display (until new version fix) -> Force
+     the Tracer variables grid to show more columns if needed, 
+     or ensure it doesn't wrap too early within the project card */
+  :deep(.grid.grid-cols-1.sm\:grid-cols-2.md\:grid-cols-3) {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.75rem !important;
+  }
+
+  :deep(.grid.grid-cols-1.sm\:grid-cols-2.md\:grid-cols-3 > *) {
+    flex: 1 1 200px !important;
+    min-width: 200px !important;
+    display: block !important;
+  }
+
+  :deep(.grid.grid-cols-1.sm\:grid-cols-2.md\:grid-cols-3 button) {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  :deep(.grid.grid-cols-1.sm\:grid-cols-2.md\:grid-cols-3 button.w-full) {
+    display: block !important;
+    width: 100% !important;
+    color: black!important;
+    background-color: #eceaea!important;
+  }
+</style>
 ```
