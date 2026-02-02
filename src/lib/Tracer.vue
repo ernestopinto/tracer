@@ -166,8 +166,11 @@
         <div v-show="isVariablesOpen" class="p-4 space-y-4">
 
           <!-- Axis Bounds -->
-          <div v-if="props.defs?.d?.axxis !== false && props.defs?.d?.axxis !== 'false'" class="rounded-xl border border-gray-200 bg-slate-50 p-4">
-            <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 px-1 flex items-center gap-2">
+          <div
+              v-if="props.defs?.d?.axxis !== false"
+              class="rounded-xl border border-gray-200 bg-slate-50 p-4"
+          >
+          <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 px-1 flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
               Axis Bounds
             </div>
