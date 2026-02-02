@@ -73,7 +73,8 @@ const functions = ref({
 </template>
 
 <style scoped>
-  /* WorkAround for the VARS display -> Force the Tracer variables grid to show more columns if needed,
+  /* WorkAround for the VARS display (until version update fix) -> Force
+     the Tracer variables grid to show more columns if needed,
      or ensure it doesn't wrap too early within the project card */
   :deep(.grid.grid-cols-1.sm\:grid-cols-2.md\:grid-cols-3) {
     display: flex !important;
@@ -111,6 +112,17 @@ const functions = ref({
     right: 0.5rem !important;
     margin: 0 !important;
     z-index: 10 !important;
+  }
+
+  /* Fix for Reset and Export buttons position */
+  :deep(.absolute.top-0.right-0.flex.gap-2.print\:hidden.z-10) {
+    position: absolute !important;
+    right: 1rem !important;
+  }
+
+  /* Ensure the parent container of the plot/canvas area is relative if it's not already */
+  :deep(.relative.w-full.h-full) {
+    position: relative !important;
   }
 </style>
 ```
