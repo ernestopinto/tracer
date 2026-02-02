@@ -3,6 +3,30 @@
 
 A Flexible function tracer for Vue 3, allowing users to plot mathematical expressions, manipulate variables in real-time, and perform calculus operations.
 
+### Advanced Usage: External Control
+
+You can also control the `Tracer` component externally (e.g., from a sidebar) by using a `ref` to access its exposed methods, such as `setExpr`.
+
+```vue
+<script setup>
+import { ref } from 'vue'
+import Tracer from '@ernestopinto/tracer'
+
+const functions = ref({ /* ... */ })
+const tracerRef = ref(null)
+
+function updateFromOutside(expression, name) {
+  // Directly set the expression and function name
+  tracerRef.value?.setExpr(expression, name)
+}
+</script>
+
+<template>
+  <Tracer v-model:defs="functions" ref="tracerRef" />
+  <button @click="updateFromOutside('x^3', 'Cubic')">Set to x^3</button>
+</template>
+```
+
 ## Main Features
 
 ### Plot Capabilities
