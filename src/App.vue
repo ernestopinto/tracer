@@ -135,8 +135,7 @@ const STORAGE_KEY = "tracer_defs";
 
 const functions = ref<TracerDefs>({
   f: [
-    { name: "Sine Wave", f: "A*sin(B*x)" },
-    { name: "Inverted", f: "B/x" }
+    { name: "Sine Wave", f: "A*sin(B*x)" }
   ],
   d: {
     axxis: true,
